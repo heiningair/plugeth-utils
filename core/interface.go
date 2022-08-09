@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"io"
 	"math/big"
 	"time"
 
@@ -213,4 +214,20 @@ type BlockContext struct {
 	Time        *big.Int
 	Difficulty  *big.Int
 	BaseFee     *big.Int
+}
+
+type BlockChain interface {
+	SetHead(head uint64) error
+	SnapSyncCommitHead(hash Hash) error
+	Reset() error
+	ResetWithGenesisBlock(genesis []byte) error // RLP encoded *types.Block
+	Export(w io.Writer) error
+	ExportN(w io.Writer, first uint64, last uint64) error
+	Stop()
+	StopInsert()
+	InsertReceiptChain(blockChain [][]byte, receiptChain [][][]byte, ancientLimit uint64) (int, error) // List of RLP encoded blocks, list of RLP encoded receipts
+	InsertChain(chain [][]byte) (int, error)                                                           // List of RLP encoded blocks
+	InsertBlockWithoutSetHead(block []byte) error                                                      // RLP encoded *types.BLock
+	SetChainHead(head []byte) error                                                                    // RLP encoded *types.Block
+	InsertHeaderChain(chain [][]byte, checkFreq int) (int, error)                                      // List of rlp encoded *types.Header
 }

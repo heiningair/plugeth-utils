@@ -110,6 +110,46 @@ type StateDB interface {
 
 	AddressInAccessList(addr Address) bool
 	SlotInAccessList(addr Address, slot Hash) (addressOk bool, slotOk bool)
+
+	// ADDED FOR EXPOSING StateDB
+	StartPrefetcher(namespace string)
+	StopPrefetcher()
+	Error() error
+	// RLP encoded *types.Log
+	AddLog(log []byte)
+	// List of RLP encoded *types.Log
+	GetLogs(hash Hash, blockHash Hash) [][]byte
+	// List of RLP encoded *types.Log
+	Logs() [][]byte
+	AddPreimage(hash Hash, preimage []byte)
+	Preimages() map[Hash][]byte
+	AddRefund(gas uint64)
+	SubRefund(gas uint64)
+	TxIndex() int
+	GetProof(addr Address) ([][]byte, error)
+	GetProofByHash(addrHash Hash) ([][]byte, error)
+	GetStorageProof(a Address, key Hash) ([][]byte, error)
+	Database() []byte
+	AddBalance(addr Address, amount *big.Int)
+	SubBalance(addr Address, amount *big.Int)
+	SetBalance(addr Address, amount *big.Int)
+	SetNonce(addr Address, nonce uint64)
+	SetCode(addr Address, code []byte)
+	SetState(addr Address, key, value Hash)
+	SetStorage(addr Address, storage map[Hash]Hash)
+	Suicide(addr Address) bool
+	// returns RLP encoded StateObject
+	GetOrNewStateObject(addr Address) []byte
+	CreateAccount(addr Address)
+	Copy() *StateDB
+	Snapshot() int
+	RevertToSnapshot(revid int)
+	Finalise(deleteEmptyObjects bool)
+	IntermediateRoot(deleteEmptyObjects bool) Hash
+	Prepare(thash Hash, ti int)
+	Commit(deleteEmptyObjects bool) (Hash, error)
+	AddAddressToAccessList(addr Address)
+	AddSlotToAccessList(addr Address, slot Hash)
 }
 
 type ScopeContext interface {

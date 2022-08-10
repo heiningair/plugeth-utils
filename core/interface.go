@@ -111,6 +111,7 @@ type StateDB interface {
 	AddressInAccessList(addr Address) bool
 	SlotInAccessList(addr Address, slot Hash) (addressOk bool, slotOk bool)
 
+	// ADDED FOR EXPOSING StateDB
 	StartPrefetcher(namespace string)
 	StopPrefetcher()
 	Error() error
